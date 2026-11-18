@@ -22,9 +22,9 @@ a check fails, the required checks pass, someone comments or reviews, or the
 branch conflicts.
 
 - **Only the thread that owns the PR watches it.** If you are a delegated
-  child task (a reviewer, a Sol round, any `delegate_task` child), never call
-  `watch_pull_request`. The parent owns the PR. Do not watch PRs you are not
-  working on.
+  child task (a reviewer, an Opus or Sol round, any `delegate_task` child),
+  never call `watch_pull_request`. The parent owns the PR. Do not watch PRs
+  you are not working on.
 - **A wake is news, not a merge decision.** Check the merge gate yourself.
 - **Unwatch when you hand off.** A watched thread stays in Working and out of
   the user's inbox. When you stop (ready, blocked, or asking the user a question),

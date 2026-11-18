@@ -9,10 +9,10 @@ Do the same work as `full-send`, but stop with the PR ready for the user to merg
 Never merge it.
 
 Read [full-send](../full-send/SKILL.md) and follow its workflow, proof rules,
-review, and babysitting steps. An explicit "full stop" request authorizes that
-work without a separate "full send" request. That includes full-send's
-testing permission. A "full stop" request is the permission for the test
-methods Proof needs, even when a project file says to ask first, for
+review with `opus-loop`, and babysitting steps. An explicit "full stop" request
+authorizes that work without a separate "full send" request. That includes
+full-send's testing permission. A "full stop" request is the permission for
+the test methods Proof needs, even when a project file says to ask first, for
 example before computer use. Use those methods directly. Its merge
 permission does not apply. The overrides below take precedence.
 
@@ -43,5 +43,5 @@ without the user. If someone else merged it, report that instead.
   needed. Follow full-send's rules for asking the user.
 
 In T3 Code, call `unwatch_pull_request` before the handoff or a question.
-Report the PR link, final head, verdict, proof, reviewer outcome, and remaining
-risks. State whether the PR is still open and unmerged.
+Report the PR link, final head, verdict, proof, `opus-loop` outcome, and
+remaining risks. State whether the PR is still open and unmerged.
