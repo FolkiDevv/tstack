@@ -47,22 +47,24 @@ missing or pre-failing checks in the brief.
 
 The reviewer is Claude Opus 5.5 at `high` reasoning effort, unless the user
 names another model or effort. Both are required: a lower effort or another
-model is a substitute. A fresh reviewer is the point, so run it as a
-subagent even if you are Opus 5.5 yourself.
+model is a substitute. A reviewer separate from the author is the point,
+so run it as a subagent even if you are Opus 5.5 yourself.
 
 In T3, call `orchestrator_capabilities`. Pick Opus 5.5 from the Claude
 provider by the ID it lists; do not hardcode one. Set high effort in
 `target.options` with the option name it lists. Use `delegate_task` every
-round (`role: "review"`, `mode: "async"`), even from Claude: the effort
-setting needs it. Save `taskId`. New `clientRequestId` per round.
-`childThreadId` is storage, not the next target. Do not use
-`t3_thread_send`, `create_threads`, or `t3_thread_launch` for review.
+round (`role: "review"`, `mode: "async"`), even from Claude: T3 runs
+children with set options through `delegate_task`. Save `taskId`. New
+`clientRequestId` per round. `childThreadId` is storage, not the next
+target. Do not use `t3_thread_send`, `create_threads`, or
+`t3_thread_launch` for review.
 
 If T3 tools are not listed, try one direct capability call. Outside T3:
 
 - Claude Code: `Agent` with `subagent_type: "general-purpose"`,
   `model: "opus"`, `effort: "high"`, `run_in_background: true`. Use it only
-  if `opus` resolves to Opus 5.5 in this session. Keep the agent ID.
+  if the session's environment lists Opus 5.5 as its Opus model. Keep the
+  agent ID.
 - Codex or another harness: a native subagent only if it can run Opus 5.5 at
   high effort. Keep its ID.
 
