@@ -14,6 +14,7 @@ not.
 | `council` | "council" | Gets review from three models from different providers, and loops until they agree. |
 | `opus-loop` | "opus loop" | Reviews a change with Claude Opus 5.5 at high effort in a loop until both agents agree. |
 | `sol-loop` | "sol loop" | Reviews a change with GPT Sol in a loop until both agents agree. |
+| `neon-loop` | "neon loop" | Reviews a change with Gemini Neon at medium effort in a loop until both agents agree. |
 | `file-pr` | "file a PR" | Files a short PR that leads with the problem, not an inventory of changes. |
 | `takeover` | "take over" | Finishes someone else's PR, branch, or agent thread, and keeps their credit. |
 | `babysit-pr` | "babysit" | Watches a PR through CI and review bots, and fixes the real findings. |
@@ -40,9 +41,9 @@ cp -R tstack/skills/* ~/.codex/skills/    # Codex
 
 - An authenticated [GitHub CLI](https://cli.github.com) (`gh`).
 - `python3` for `babysit-pr`'s `pr-wait` script.
-- `council` and `sol-loop` need subagents on other providers' models. T3 Code
-  does this with `delegate_task`. Otherwise you need a harness that can run
-  those models.
+- `council`, `sol-loop`, and `neon-loop` need subagents on other providers'
+  models. T3 Code does this with `delegate_task`. Otherwise you need a harness
+  that can run those models. `neon-loop` runs Gemini Neon through Antigravity.
 - `opus-loop` needs a subagent that runs Claude Opus 5.5 at high reasoning
   effort: `delegate_task` in T3 Code, or the `Agent` tool in Claude Code.
 
