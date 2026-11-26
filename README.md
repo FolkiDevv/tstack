@@ -12,9 +12,11 @@ not.
 | `full-send` | "full send" | Takes a change to a merged PR with nobody watching: proves it, reviews it, files it, babysits it, merges it. |
 | `full-stop` | "full stop" | Same as `full-send`, but stops when the PR is ready for you to merge. |
 | `council` | "council" | Gets review from three models from different providers, and loops until they agree. |
+| `review` | "review" | Runs `neon-loop` and `neon-security-loop` on a change at the same time, until both agree. |
 | `opus-loop` | "opus loop" | Reviews a change with Claude Opus 5.5 at high effort in a loop until both agents agree. |
 | `sol-loop` | "sol loop" | Reviews a change with GPT Sol in a loop until both agents agree. |
 | `neon-loop` | "neon loop" | Reviews a change with Gemini Neon at medium effort in a loop until both agents agree. |
+| `neon-security-loop` | "neon security loop" | Looks for security holes a change opens, with Gemini Neon at medium effort, in a loop until both agents agree. |
 | `file-pr` | "file a PR" | Files a short PR that leads with the problem, not an inventory of changes. |
 | `takeover` | "take over" | Finishes someone else's PR, branch, or agent thread, and keeps their credit. |
 | `babysit-pr` | "babysit" | Watches a PR through CI and review bots, and fixes the real findings. |
@@ -23,9 +25,10 @@ not.
 
 Some skills call others. Install the ones they need too:
 
-- `full-send` uses `opus-loop`, `file-pr`, and `babysit-pr`.
-- `full-stop` uses `full-send`, and through it `opus-loop`, `file-pr`, and
+- `full-send` uses `review`, `file-pr`, and `babysit-pr`.
+- `full-stop` uses `full-send`, and through it `review`, `file-pr`, and
   `babysit-pr`.
+- `review` uses `neon-loop` and `neon-security-loop`.
 - `takeover` uses `modernize`, `file-pr`, `babysit-pr`, and `leaving-pr-comments`.
 - `file-pr`, `babysit-pr`, and `modernize` use `leaving-pr-comments`.
 
@@ -41,9 +44,10 @@ cp -R tstack/skills/* ~/.codex/skills/    # Codex
 
 - An authenticated [GitHub CLI](https://cli.github.com) (`gh`).
 - `python3` for `babysit-pr`'s `pr-wait` script.
-- `council`, `sol-loop`, and `neon-loop` need subagents on other providers'
-  models. T3 Code does this with `delegate_task`. Otherwise you need a harness
-  that can run those models. `neon-loop` runs Gemini Neon through Antigravity.
+- `council`, `sol-loop`, `neon-loop`, and `neon-security-loop` need subagents
+  on other providers' models. T3 Code does this with `delegate_task`. Otherwise
+  you need a harness that can run those models. The Neon loops run Gemini Neon
+  through Antigravity.
 - `opus-loop` needs a subagent that runs Claude Opus 5.5 at high reasoning
   effort: `delegate_task` in T3 Code, or the `Agent` tool in Claude Code.
 
