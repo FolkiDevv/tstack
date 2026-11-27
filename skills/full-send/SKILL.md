@@ -46,7 +46,12 @@ one appears.
    smallest change that works. Fix the case that happened, not every case
    that could. If you are on the default branch, create a branch first.
 2. **Prove it.** Get proof for every change you made. See "Proof".
-3. **Get feedback.** Use the `review` skill to verify changes.
+3. **Get feedback.** Use the `review` skill to verify changes. If the
+   change is large enough for `neon-loop` to split it into slices, run the
+   `opus-review` skill on the result after `review` agrees: the two models
+   find different bugs. If the Opus reviewers cannot run or stop running,
+   say so in the report and go on. If you already made fixes for them,
+   first run `review` again as a new run that covers those fixes.
 4. **File the PR** with the `file-pr` skill. Rebase onto the latest default
    branch first. Add one short line to the description that says how you proved
    the change.
@@ -84,6 +89,8 @@ Ask the user.
 Full confidence means all of these are true on the latest commit:
 
 - Your proof covers every change in the diff.
+- `review` covered every behavior fix you made after filing the PR. See
+  `babysit-pr`.
 - Required checks are green.
 - Review bots have finished, and each finding is fixed or dismissed with a
   written reason.

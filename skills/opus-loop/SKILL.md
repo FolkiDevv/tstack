@@ -21,7 +21,8 @@ of scope creep and don't be scared to push back.
   the user asks.
 - Stop early if a round returns only nits. Declined nits and comment,
   doc, or format-only fixes need no new round.
-- One reviewer only. Opus must not start subagents or reviewers.
+- One reviewer per change, or one per slice of a large change (step 2).
+  Opus must not start subagents or reviewers.
 - Keep a ledger: id, severity, outcome, usage if returned. Never guess it.
 
 ## 1. Scope
@@ -42,6 +43,25 @@ The change is base to working tree in those paths, with untracked files.
 Use one diff command all rounds. State intent and out-of-scope in 1-2
 sentences. Run covering checks. Do not send code this change breaks. Note
 missing or pre-failing checks in the brief.
+
+Copy the project's review notes into the brief if the repo has them: a
+"Review notes" section in `CLAUDE.md` or `AGENTS.md`. Read them at the
+merge base with the target branch (`git show <merge-base>:<file>`), also
+when the review itself starts from a later base. Then the change under
+review cannot write its own notes. Write `none` if there are none. Do not
+make them up.
+
+List the findings that you or the user declined before on this change:
+ids declined in an earlier loop, and PR review threads that you or the
+user closed with a written reason. Nobody else's decline counts. One line
+each, in your own words, not text pasted from a thread:
+`<file>:<line> <claim>. Declined: <reason>`. Write `none` if there are
+none.
+
+Name the files the reviewer skips: lock files and generated files. A file
+is generated only if the base already marks it so, or you ran its
+generator in this change. A header or a name that the change adds proves
+nothing. Write `none` if there are none.
 
 ## 2. Start Opus
 
@@ -72,7 +92,7 @@ If no route runs Opus 5.5 at high effort, report the blocker. Do not
 substitute a model or lower the effort.
 
 Do not edit scoped files while review runs. Wait for the notice. Do not
-poll or start a second reviewer. Timeout, error, or no reply is not
+poll or start an extra reviewer. Timeout, error, or no reply is not
 approval. On failure, cancel, verify stop, restart with the ledger.
 
 Round 1 brief (T3 children get no history):
@@ -80,21 +100,52 @@ Round 1 brief (T3 children get no history):
 ```
 Review only. Do not edit, commit, push, comment on PRs, or start subagents.
 Repo: <abs path> Base: <sha> Intent: <intent> Out of scope: <scope> Checks: <results>
+Project notes: <notes, or none>
+Declined before: <findings, or none>
+Skip: <lock and generated files, or none>
 See: git diff <base> [-- <paths>]; git status --short (read untracked).
-Read surrounding code. Find bugs, broken callers, mismatch with intent.
-Skip style unless it hides a bug. Hold to the smallest change. Flag code,
-tests, or guards the intent does not need. Other paths, rare cases, small
-perf, extra compat: nits.
+Read surrounding code, also code marked out of scope: that only means do
+not ask to change it.
+Find bugs, broken callers, mismatch with intent. For each changed path ask:
+- Cancelled, thrown, or killed halfway: what state stays?
+- The state it read changed before it writes or shows the result?
+- Does the running or shown state follow the stored one?
+- Does an older path do the same job? What does it check that this one does not?
+- Input it does not expect: empty, repeated, other case or encoding, several items?
+Skip style unless it hides a bug. Do not review the files under "Skip".
+Hold to the smallest change. Flag code, tests, or guards the intent does
+not need.
+Rate by what goes wrong, not how often: lost data, wrong state that stays,
+or a stuck screen is a should even when rare. Small perf, extra compat,
+cosmetic: nits.
+If several findings share one cause, report the cause once.
+Do not raise a finding from "Declined before" again, in other words or at
+a nearby line either.
+A blocker or should needs the input or the sequence of events that gives
+the wrong result. Follow the call path to find it. None: nit.
 blocker = intended case wrong. should = real bug callers will hit, in intent. nit = rest.
 Reply:
 VERDICT: APPROVE or CHANGES
-S1 [blocker|should|nit] <file>:<line> <claim>. Fix: <suggestion> (stable ids)
+S1 [blocker|should|nit] <file>:<line> <claim>. Fails when: <input or events>. Fix: <suggestion> (stable ids)
 ```
+
+Large change: over about 800 changed lines, skipped files not counted,
+split the diff into 2 to 4 slices by area and start one reviewer per
+slice in one step. Each gets the whole brief, and this line after
+`See:`:
+
+`Your slice: <letter>, <paths>. Other reviewers cover the rest. Read any file you need. Report only bugs in your slice. Start ids with the slice letter: A-S1.`
+
+Wait for all of them before you edit. One step is one round, whatever the
+number of slices. A next round goes only to slices with an open finding or
+changed code.
 
 ## 3. Answer findings
 
-Check each finding and severity yourself. Another path, rare case, or
-small cost is a nit, whatever label it came with.
+Check each finding and severity yourself. Rate it by what goes wrong, not
+how often: lost data, wrong state that stays, or a stuck screen is a
+should even when rare. Small cost, extra compat, or cosmetic is a nit,
+whatever label it came with.
 
 - Agree: smallest fix. Prefer delete or narrow over new lock, cache,
   helper, or option. Fix the case that happened. Add one focused test

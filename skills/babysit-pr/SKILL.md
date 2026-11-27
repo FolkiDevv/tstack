@@ -80,6 +80,17 @@ finding against the source before changing code. Fix real findings and CI
 failures, distinguish repository failures from infrastructure flakes, and reply
 with a written reason when dismissing false positives.
 
+Before you push a fix that changes behavior, run the `review` skill on the
+fix alone. The base is the pushed PR head, so review before you rebase.
+List each fix in the intent, and add to the briefs: `This diff is a set of
+fixes. Check each fix, and what it changes for the code around it.` Fixes
+for bot findings break the code next to them, and the bots report that
+only after the push. Comment, doc, and format-only fixes need no review,
+unless an agent or a tool obeys the text: agent instructions, prompts, and
+comments that switch a check off. If the review cannot run, push the fix,
+say in the report that it went unreviewed, and do not merge the PR without
+the user.
+
 If the repo has `.macroscope/check-run-agents/*.md`, read those rules before you
 reply to a Macroscope finding. Its findings cite them.
 

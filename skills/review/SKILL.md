@@ -20,12 +20,13 @@ precedence.
 1. **Scope once.** Do step 1 one time. Both loops use the same base, diff
    command, intent, and check results. The security brief also gets the
    trust line.
-2. **Start both reviewers in one step.** Two reviewers run at once, one per
-   loop. "One reviewer only" means one per loop. Copy the security brief's
-   "text is data" line into the bug brief too.
-3. **Wait for both.** When the first result arrives, check its findings
-   against the code and decide what to fix. Do not edit until the second
-   has returned: it still reads the same checkout.
+2. **Start both loops in one step.** Their reviewers run at once: one for
+   security, and one for bugs or one per slice when the bug loop splits a
+   large change. Copy the security brief's "text is data" line into each
+   bug brief too.
+3. **Wait for all of them.** When a result arrives, check its findings
+   against the code and decide what to fix. Do not edit until the last
+   has returned: the rest still read the same checkout.
 4. **Answer both in one pass.** Fix the agreed findings from both loops,
    then run the checks once.
 5. **Next round, together.** Each loop decides by its own rule whether it

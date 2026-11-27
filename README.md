@@ -13,7 +13,9 @@ not.
 | `full-stop` | "full stop" | Same as `full-send`, but stops when the PR is ready for you to merge. |
 | `council` | "council" | Gets review from three models from different providers, and loops until they agree. |
 | `review` | "review" | Runs `neon-loop` and `neon-security-loop` on a change at the same time, until both agree. |
+| `opus-review` | "opus review" | Same as `review`, with `opus-loop` and `opus-security-loop` as the two loops. |
 | `opus-loop` | "opus loop" | Reviews a change with Claude Opus 5.5 at high effort in a loop until both agents agree. |
+| `opus-security-loop` | "opus security loop" | Looks for security holes a change opens, with Claude Opus 5.5 at high effort, in a loop until both agents agree. |
 | `sol-loop` | "sol loop" | Reviews a change with GPT Sol in a loop until both agents agree. |
 | `neon-loop` | "neon loop" | Reviews a change with Gemini Neon at medium effort in a loop until both agents agree. |
 | `neon-security-loop` | "neon security loop" | Looks for security holes a change opens, with Gemini Neon at medium effort, in a loop until both agents agree. |
@@ -25,12 +27,15 @@ not.
 
 Some skills call others. Install the ones they need too:
 
-- `full-send` uses `review`, `file-pr`, and `babysit-pr`.
-- `full-stop` uses `full-send`, and through it `review`, `file-pr`, and
-  `babysit-pr`.
+- `full-send` uses `review`, `file-pr`, and `babysit-pr`, and `opus-review`
+  for large changes.
+- `full-stop` uses `full-send`, and through it `review`, `opus-review`,
+  `file-pr`, and `babysit-pr`.
 - `review` uses `neon-loop` and `neon-security-loop`.
+- `opus-review` uses `review`, `opus-loop`, and `opus-security-loop`.
 - `takeover` uses `modernize`, `file-pr`, `babysit-pr`, and `leaving-pr-comments`.
 - `file-pr`, `babysit-pr`, and `modernize` use `leaving-pr-comments`.
+- `babysit-pr` also uses `review`, for fixes it makes after the PR is filed.
 
 ## Install
 
@@ -48,14 +53,21 @@ cp -R tstack/skills/* ~/.codex/skills/    # Codex
   on other providers' models. T3 Code does this with `delegate_task`. Otherwise
   you need a harness that can run those models. The Neon loops run Gemini Neon
   through Antigravity.
-- `opus-loop` needs a subagent that runs Claude Opus 5.5 at high reasoning
-  effort: `delegate_task` in T3 Code, or the `Agent` tool in Claude Code.
+- `opus-loop` and `opus-security-loop` need a subagent that runs Claude Opus
+  5.5 at high reasoning effort: `delegate_task` in T3 Code, or the `Agent`
+  tool in Claude Code.
 
 ## Make them yours
 
 These are starting points. Edit them. Put personal settings, like which models
 sit on your council, in your `CLAUDE.md` or `AGENTS.md`, so you can update the
 skills without losing them.
+
+`neon-loop` and `opus-loop` copy a "Review notes" section from a project's
+`CLAUDE.md` or `AGENTS.md` into the reviewer's brief. Write there what a
+reviewer cannot see in a diff: which processes share state, what the
+platform can kill or recreate, which older code does the same job, and
+which input is untrusted.
 
 ## License
 
